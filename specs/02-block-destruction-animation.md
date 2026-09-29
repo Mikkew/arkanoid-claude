@@ -1,6 +1,6 @@
 # SPEC 02 — Animación de destrucción de bloques
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01
 > **Date:** 2026-09-28
 > **Objective:** Reproducir una animación de explosión de 4 frames (150 ms) en la posición de cada bloque roto, usando `EXPLOSION_FRAMES` de `assets/spritesheet.js`, sin alterar colisión ni puntaje.
@@ -63,18 +63,18 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] Al romper un bloque de cualquier color (`gray|red|yellow|cyan|magenta|hotpink|green`) se muestran los 4 frames de explosión del atlas en la posición del bloque.
-- [ ] La animación dura 150 ms (`EXPLOSION_DURATION`) ± un frame de render.
-- [ ] Los frames se dibujan con `drawFrame` y `EXPLOSION_FRAMES[color]`, sin slicing manual.
-- [ ] El bloque roto deja de colisionar y suma 10 puntos en el momento del golpe, no al terminar la animación.
-- [ ] La bola atraviesa la zona de una explosión en curso sin rebotar.
-- [ ] Dos o más bloques rotos en frames cercanos muestran sus explosiones simultáneamente, sin cortarse entre sí.
-- [ ] Ningún archivo ni línea de audio cambia respecto a SPEC 01 (`git diff` no toca `playSound` ni `sounds`).
-- [ ] Pausar durante una explosión la congela; al reanudar termina el tiempo restante.
-- [ ] Al romper el último bloque (cualquier color), la pantalla de victoria aparece solo tras terminar su explosión.
-- [ ] Reiniciar partida desde game over o victoria no deja explosiones residuales en pantalla.
-- [ ] Sin errores en la consola del navegador.
-- [ ] Puntaje, vidas, sonidos y pantallas de SPEC 01 siguen funcionando igual.
+- [X] Al romper un bloque de cualquier color (`gray|red|yellow|cyan|magenta|hotpink|green`) se muestran los 4 frames de explosión del atlas en la posición del bloque.
+- [X] La animación dura 150 ms (`EXPLOSION_DURATION`) ± un frame de render.
+- [X] Los frames se dibujan con `drawFrame` y `EXPLOSION_FRAMES[color]`, sin slicing manual.
+- [X] El bloque roto deja de colisionar y suma 10 puntos en el momento del golpe, no al terminar la animación.
+- [X] La bola atraviesa la zona de una explosión en curso sin rebotar.
+- [X] Dos o más bloques rotos en frames cercanos muestran sus explosiones simultáneamente, sin cortarse entre sí.
+- [X] Ningún archivo ni línea de audio cambia respecto a SPEC 01 (`git diff` no toca `playSound` ni `sounds`).
+- [X] Pausar durante una explosión la congela; al reanudar termina el tiempo restante.
+- [X] Al romper el último bloque (cualquier color), la pantalla de victoria aparece solo tras terminar su explosión.
+- [X] Reiniciar partida desde game over o victoria no deja explosiones residuales en pantalla.
+- [X] Sin errores en la consola del navegador.
+- [X] Puntaje, vidas, sonidos y pantallas de SPEC 01 siguen funcionando igual.
 
 ---
 
