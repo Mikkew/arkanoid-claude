@@ -1,6 +1,6 @@
 # SPEC 01 — MVP jugable de Arkanoid
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** —
 > **Date:** 2026-09-28
 > **Objective:** Construir un MVP jugable de Arkanoid en HTML/CSS/JS vanilla, con un nivel fijo, paleta controlada por teclado y mouse, sistema de vidas, puntaje y pantallas de inicio, pausa, derrota y victoria.
@@ -76,20 +76,20 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `index.html` carga sin errores en la consola del navegador.
-- [ ] La pantalla de inicio se muestra antes de que la bola se mueva.
-- [ ] La paleta se mueve con flechas izquierda/derecha, con A/D, y con el mouse.
-- [ ] La bola rebota correctamente en las paredes izquierda, derecha y superior.
-- [ ] El ángulo de rebote en la paleta cambia según el punto de impacto.
-- [ ] Romper un bloque suma exactamente 10 puntos y el bloque desaparece del canvas.
-- [ ] Se reproduce `break-sound.mp3` al romper un bloque y `ball-bounce.mp3` en cada rebote de pared/paleta.
-- [ ] Al caer la bola debajo de la paleta se pierde una vida y la bola/paleta se reinician de posición.
-- [ ] Tras perder 3 vidas se muestra la pantalla de game over con el puntaje final.
-- [ ] Al romper todos los bloques se muestra la pantalla de victoria con el puntaje final.
-- [ ] `P` o `Escape` pausa y reanuda la partida sin perder el puntaje ni la posición de los bloques.
-- [ ] Desde game over o victoria, reiniciar (tecla `R` o botón) vuelve a jugar una partida nueva sin recargar la página.
-- [ ] El canvas se reescala manteniendo proporción al redimensionar la ventana.
-- [ ] Cerrar y volver a abrir `index.html` no conserva puntaje ni progreso (sin persistencia, por diseño).
+- [X] `index.html` carga sin errores en la consola del navegador.
+- [X] La pantalla de inicio se muestra antes de que la bola se mueva.
+- [X] La paleta se mueve con flechas izquierda/derecha, con A/D, y con el mouse.
+- [X] La bola rebota correctamente en las paredes izquierda, derecha y superior.
+- [X] El ángulo de rebote en la paleta cambia según el punto de impacto.
+- [X] Romper un bloque suma exactamente 10 puntos y el bloque desaparece del canvas.
+- [X] Se reproduce `break-sound.mp3` al romper un bloque y `ball-bounce.mp3` en cada rebote de pared/paleta.
+- [X] Al caer la bola debajo de la paleta se pierde una vida y la bola/paleta se reinician de posición.
+- [X] Tras perder 3 vidas se muestra la pantalla de game over con el puntaje final.
+- [X] Al romper todos los bloques se muestra la pantalla de victoria con el puntaje final.
+- [X] `P` o `Escape` pausa y reanuda la partida sin perder el puntaje ni la posición de los bloques.
+- [X] Desde game over o victoria, reiniciar (tecla `R` o botón) vuelve a jugar una partida nueva sin recargar la página.
+- [X] El canvas se reescala manteniendo proporción al redimensionar la ventana.
+- [X] Cerrar y volver a abrir `index.html` no conserva puntaje ni progreso (sin persistencia, por diseño).
 
 ---
 
