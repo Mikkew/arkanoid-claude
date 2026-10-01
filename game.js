@@ -6,42 +6,77 @@ const WIDTH = 480;
 const HEIGHT = 640;
 
 const BLOCK_COLS = 8;
-const BLOCK_ROWS = 5;
 const BLOCK_W = 48;
 const BLOCK_H = 20;
 const BLOCK_GAP = 4;
 const GRID_X = (WIDTH - (BLOCK_COLS * BLOCK_W + (BLOCK_COLS - 1) * BLOCK_GAP)) / 2;
 const GRID_Y = 60;
-const ROW_COLORS = ['red', 'yellow', 'green', 'cyan', 'magenta'];
+
+// Código de celda -> bloque. '.' = sin bloque
+const CELL_BLOCKS = {
+  R: { color: 'red', hp: 1 },
+  Y: { color: 'yellow', hp: 1 },
+  G: { color: 'green', hp: 1 },
+  C: { color: 'cyan', hp: 1 },
+  M: { color: 'magenta', hp: 1 },
+  X: { color: 'gray', hp: 2 },
+};
+
+const LEVELS = [
+  {
+    grid: ['RRRRRRRR', 'YYYYYYYY', 'GGGGGGGG', 'CCCCCCCC', 'MMMMMMMM'],
+    ballSpeed: 300,
+  },
+  {
+    grid: ['XXXXXXXX', 'RYGCCGYR', '.MM..MM.', 'RYGCCGYR', '........'],
+    ballSpeed: 330,
+  },
+  {
+    grid: ['X..XX..X', 'XRXYYXRX', 'GXCXXCXG', 'MMX..XMM', 'XRYGGYRX', '..XXXX..'],
+    ballSpeed: 360,
+  },
+  {
+    grid: ['XRXXXXRX', 'YGCMMCGY', 'X.XXXX.X', 'MCGYYGCM', '.XRXXRX.', '..XXXX..'],
+    ballSpeed: 390,
+  },
+  {
+    grid: ['XXXXXXXX', 'XRYGGYRX', 'XCMXXMCX', 'XGXRRXGX', 'XMCXXCMX', 'XYRGGRYX', '..XXXX..'],
+    ballSpeed: 420,
+  },
+];
 
 const PADDLE_W = 100;
 const PADDLE_H = 14;
 const PADDLE_Y = HEIGHT - 40;
 
 const BALL_R = 8;
-const BALL_SPEED = 300; // px/s
 
 const state = {
-  status: 'start', // 'start' | 'playing' | 'paused' | 'gameover' | 'victory'
+  status: 'start', // 'start' | 'playing' | 'paused' | 'gameover' | 'victory' | 'levelcomplete'
+  level: 1, // 1..LEVELS.length
   score: 0,
   lives: 3,
   paddle: { x: 0, y: 0, w: PADDLE_W, h: PADDLE_H },
-  ball: { x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, speed: BALL_SPEED },
+  ball: { x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, speed: LEVELS[0].ballSpeed },
   blocks: [],
   explosions: [],
 };
 
 const createBlocks = () => {
   const blocks = [];
-  for (let row = 0; row < BLOCK_ROWS; row++) {
+  const { grid } = LEVELS[state.level - 1];
+  for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < BLOCK_COLS; col++) {
+      const cell = CELL_BLOCKS[grid[row][col]];
+      if (!cell) continue;
       blocks.push({
         x: GRID_X + col * (BLOCK_W + BLOCK_GAP),
         y: GRID_Y + row * (BLOCK_H + BLOCK_GAP),
         w: BLOCK_W,
         h: BLOCK_H,
-        color: ROW_COLORS[row],
+        color: cell.color,
         alive: true,
+        hp: cell.hp,
       });
     }
   }
@@ -49,7 +84,7 @@ const createBlocks = () => {
 };
 
 const resetPaddleAndBall = () => {
-  state.paddle.x = (WIDTH - PADDLE_W) / 2;
+  state.paddle.x = (WIDTH - state.paddle.w) / 2;
   state.paddle.y = PADDLE_Y;
   state.ball.x = WIDTH / 2;
   state.ball.y = PADDLE_Y - BALL_R;
@@ -57,13 +92,20 @@ const resetPaddleAndBall = () => {
   state.ball.vy = 0;
 };
 
-const resetState = () => {
-  state.status = 'start';
-  state.score = 0;
-  state.lives = 3;
+// Carga el nivel n (1..LEVELS.length). No toca puntaje ni vidas
+const loadLevel = (n) => {
+  state.level = n;
+  state.ball.speed = LEVELS[n - 1].ballSpeed;
   state.blocks = createBlocks();
   state.explosions = [];
   resetPaddleAndBall();
+  state.status = 'start';
+};
+
+const resetState = () => {
+  state.score = 0;
+  state.lives = 3;
+  loadLevel(1);
 };
 
 const drawCenteredText = (text, y, size) => {
@@ -144,11 +186,27 @@ const drawHud = () => {
   ctx.font = '18px sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(`Puntaje: ${state.score}`, 12, 12);
+  ctx.textAlign = 'center';
+  ctx.fillText(`Nivel ${state.level}/${LEVELS.length}`, WIDTH / 2, 12);
   ctx.textAlign = 'right';
   ctx.fillText(`Vidas: ${state.lives}`, WIDTH - 12, 12);
 };
 
 const RESTART_BUTTON = { x: WIDTH / 2 - 90, y: HEIGHT / 2 + 60, w: 180, h: 44 };
+const CONTINUE_BUTTON = { x: WIDTH / 2 - 90, y: HEIGHT / 2 + 60, w: 180, h: 44 };
+
+// Selector de nivel en pausa: un botón por nivel, en fila centrada
+const LEVEL_BUTTON_SIZE = 44;
+const LEVEL_BUTTON_GAP = 12;
+const LEVEL_BUTTONS_X =
+  (WIDTH - (LEVELS.length * LEVEL_BUTTON_SIZE + (LEVELS.length - 1) * LEVEL_BUTTON_GAP)) / 2;
+const LEVEL_BUTTONS = LEVELS.map((_, i) => ({
+  n: i + 1,
+  x: LEVEL_BUTTONS_X + i * (LEVEL_BUTTON_SIZE + LEVEL_BUTTON_GAP),
+  y: HEIGHT / 2 + 90,
+  w: LEVEL_BUTTON_SIZE,
+  h: LEVEL_BUTTON_SIZE,
+}));
 
 const drawPauseScreen = () => {
   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -158,6 +216,20 @@ const drawPauseScreen = () => {
   ctx.textBaseline = 'middle';
   drawCenteredText('PAUSA', HEIGHT / 2 - 10, 48);
   drawCenteredText('P o Esc para reanudar', HEIGHT / 2 + 40, 22);
+  drawCenteredText('Ir al nivel (1-5)', HEIGHT / 2 + 75, 18);
+
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  LEVEL_BUTTONS.forEach((btn) => {
+    const current = btn.n === state.level;
+    if (current) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(btn.x, btn.y, btn.w, btn.h);
+    }
+    ctx.strokeRect(btn.x, btn.y, btn.w, btn.h);
+    ctx.fillStyle = current ? '#000' : '#fff';
+    drawCenteredText(String(btn.n), btn.y + btn.h / 2, 20);
+  });
 };
 
 const drawEndScreen = (title) => {
@@ -174,6 +246,22 @@ const drawEndScreen = (title) => {
   ctx.strokeRect(btn.x, btn.y, btn.w, btn.h);
   drawCenteredText('Reiniciar (R)', btn.y + btn.h / 2, 20);
   drawCenteredText(`Puntaje final: ${state.score}`, HEIGHT / 2 + 20, 22);
+};
+
+const drawLevelCompleteScreen = () => {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  drawCenteredText('NIVEL COMPLETADO', HEIGHT / 2 - 30, 40);
+
+  const btn = CONTINUE_BUTTON;
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(btn.x, btn.y, btn.w, btn.h);
+  drawCenteredText('Continuar (Enter)', btn.y + btn.h / 2, 20);
+  drawCenteredText(`Puntaje: ${state.score}`, HEIGHT / 2 + 20, 22);
 };
 
 const render = () => {
@@ -197,6 +285,7 @@ const render = () => {
   else if (state.status === 'paused') drawPauseScreen();
   else if (state.status === 'gameover') drawEndScreen('GAME OVER');
   else if (state.status === 'victory') drawEndScreen('¡VICTORIA!');
+  else if (state.status === 'levelcomplete') drawLevelCompleteScreen();
 };
 
 const MAX_BOUNCE_ANGLE = Math.PI / 3; // 60° desde la vertical, en el borde de la paleta
@@ -207,7 +296,7 @@ const setBallDirection = (angle) => {
   state.ball.vy = -state.ball.speed * Math.cos(angle);
 };
 
-const CONTROL_KEYS = ['KeyP', 'Escape', 'KeyR'];
+const CONTROL_KEYS = ['KeyP', 'Escape', 'KeyR', 'Enter'];
 
 const startGame = (e) => {
   if (state.status !== 'start') return;
@@ -227,6 +316,11 @@ const restartGame = () => {
   resetState();
 };
 
+const nextLevel = () => {
+  if (state.status !== 'levelcomplete') return;
+  loadLevel(state.level + 1);
+};
+
 window.addEventListener('keydown', startGame);
 canvas.addEventListener('mousedown', startGame);
 
@@ -234,12 +328,22 @@ window.addEventListener('keydown', (e) => {
   if (e.repeat) return;
   if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
   else if (e.code === 'KeyR') restartGame();
+  else if (e.code === 'Enter') nextLevel();
+  else if (state.status === 'paused') {
+    // Teclas 1-5 (fila superior o teclado numérico) solo actúan en pausa
+    const match = /^(?:Digit|Numpad)([1-9])$/.exec(e.code);
+    if (match && Number(match[1]) <= LEVELS.length) loadLevel(Number(match[1]));
+  }
 });
 
 canvas.addEventListener('click', (e) => {
   const { x, y } = getMousePos(e);
-  const btn = RESTART_BUTTON;
-  if (x >= btn.x && x <= btn.x + btn.w && y >= btn.y && y <= btn.y + btn.h) restartGame();
+  const inside = (btn) => x >= btn.x && x <= btn.x + btn.w && y >= btn.y && y <= btn.y + btn.h;
+  if (state.status === 'paused') {
+    const btn = LEVEL_BUTTONS.find(inside);
+    if (btn) loadLevel(btn.n);
+  } else if (state.status === 'levelcomplete' && inside(CONTINUE_BUTTON)) nextLevel();
+  else if (inside(RESTART_BUTTON)) restartGame();
 });
 
 const updateBall = (dt) => {
@@ -297,10 +401,17 @@ const updateBall = (dt) => {
       ball.y = fromBelow ? b.y + b.h + ball.r : b.y - ball.r;
       ball.vy = fromBelow ? Math.abs(ball.vy) : -Math.abs(ball.vy);
     }
+    // Cualquier golpe a un bloque suena 'break', nunca 'bounce'
+    playSound('break');
+    b.hp -= 1;
+    if (b.hp > 0) {
+      // Golpe que daña: el bloque sigue vivo como 'red', sin puntos ni explosión
+      b.color = 'red';
+      break;
+    }
     b.alive = false;
     state.explosions.push({ x: b.x, y: b.y, w: b.w, h: b.h, color: b.color, elapsed: 0 });
     state.score += SCORE_PER_BLOCK;
-    playSound('break');
     break;
   }
 
@@ -328,13 +439,13 @@ const frame = (time) => {
   if (state.status === 'playing') {
     updateBall(dt);
     updateExplosions(dt);
-    // Victoria diferida: espera a que termine la última explosión
+    // Fin de nivel diferido: espera a que termine la última explosión
     if (
       state.status === 'playing' &&
       state.explosions.length === 0 &&
       state.blocks.every((block) => !block.alive)
     ) {
-      state.status = 'victory';
+      state.status = state.level < LEVELS.length ? 'levelcomplete' : 'victory';
     }
   }
 
