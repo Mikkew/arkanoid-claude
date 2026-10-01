@@ -72,6 +72,6 @@ Estados: `Draft` → `In review` → `Approved` → `Implemented`. Solo una pers
 | 01 | MVP jugable | Implemented |
 | 02 | Animación de destrucción de bloques | Implemented |
 | 03 | Múltiples niveles con dificultad progresiva | Implemented |
-| 04 | Cinco niveles, selector en pausa y reglas de sonido | Approved |
+| 04 | Cinco niveles, selector en pausa y reglas de sonido | Implemented |
 
 Más detalle del proceso y de la arquitectura en [`CLAUDE.md`](CLAUDE.md).

@@ -1,6 +1,6 @@
 # SPEC 04 — Cinco niveles, selector de nivel en pausa y reglas de sonido
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 02, SPEC 03
 > **Date:** 2026-09-30
 > **Objective:** Ampliar a 5 niveles con layout distinto y bola cada vez más rápida, permitir saltar a cualquier nivel desde la pausa, y ajustar el audio para que paleta y bordes suenen `bounce` y todo golpe a bloque suene solo `break`.
@@ -146,27 +146,27 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `index.html` carga sin errores en la consola del navegador.
-- [ ] El nivel 1 tiene el mismo layout, velocidad (300) y paleta (100) que el juego de SPEC 01.
-- [ ] Los niveles 2 a 5 muestran los layouts definidos en Scope, con bola de 330 / 360 / 390 / 420 px/s y paleta de 100 px.
-- [ ] El HUD muestra "Nivel N/5" con el nivel correcto.
-- [ ] Un bloque `X` necesita 2 golpes; tras el primero se dibuja con el sprite `block_red`.
-- [ ] El primer golpe a un bloque `X` no suma puntos ni crea explosión; el segundo suma exactamente 10 y crea explosión con frames de `red`.
-- [ ] Al romper el último bloque de los niveles 1 a 4 aparece "Nivel completado" solo después de terminar la explosión.
-- [ ] "Nivel completado" muestra el puntaje actual y se continúa con `Enter` o click en el botón.
-- [ ] Al continuar, puntaje y vidas se conservan, los bloques son los del nuevo nivel y la bola espera sobre la paleta.
-- [ ] Al continuar o saltar de nivel no quedan explosiones residuales.
-- [ ] Al romper el último bloque del nivel 5 aparece la pantalla de victoria final con el puntaje total.
-- [ ] Perder una vida no cambia de nivel ni restaura bloques rotos.
-- [ ] Reiniciar (`R` o botón) desde game over o victoria vuelve al nivel 1 con puntaje 0, vidas 3 y bola 300.
-- [ ] En pausa se ven 5 botones de nivel y el actual está resaltado.
-- [ ] En pausa, click en un botón o tecla `1`–`5` carga ese nivel en status `'start'` con puntaje y vidas conservados.
-- [ ] Las teclas `1`–`5` no hacen nada fuera de `'paused'`.
-- [ ] Rebote contra pared lateral, techo o paleta reproduce `bounce` y no `break`.
-- [ ] Cualquier golpe a un bloque (dañino o destructivo) reproduce solo `break`, nunca `bounce`.
-- [ ] No hay archivos de audio nuevos, control de volumen ni mute.
-- [ ] Pausa con `P` o `Escape` sigue funcionando en los 5 niveles.
-- [ ] Ningún archivo distinto de `game.js` cambia y `git diff` no modifica `sounds` ni `playSound`.
+- [X] `index.html` carga sin errores en la consola del navegador.
+- [X] El nivel 1 tiene el mismo layout, velocidad (300) y paleta (100) que el juego de SPEC 01.
+- [X] Los niveles 2 a 5 muestran los layouts definidos en Scope, con bola de 330 / 360 / 390 / 420 px/s y paleta de 100 px.
+- [X] El HUD muestra "Nivel N/5" con el nivel correcto.
+- [X] Un bloque `X` necesita 2 golpes; tras el primero se dibuja con el sprite `block_red`.
+- [X] El primer golpe a un bloque `X` no suma puntos ni crea explosión; el segundo suma exactamente 10 y crea explosión con frames de `red`.
+- [X] Al romper el último bloque de los niveles 1 a 4 aparece "Nivel completado" solo después de terminar la explosión.
+- [X] "Nivel completado" muestra el puntaje actual y se continúa con `Enter` o click en el botón.
+- [X] Al continuar, puntaje y vidas se conservan, los bloques son los del nuevo nivel y la bola espera sobre la paleta.
+- [X] Al continuar o saltar de nivel no quedan explosiones residuales.
+- [X] Al romper el último bloque del nivel 5 aparece la pantalla de victoria final con el puntaje total.
+- [X] Perder una vida no cambia de nivel ni restaura bloques rotos.
+- [X] Reiniciar (`R` o botón) desde game over o victoria vuelve al nivel 1 con puntaje 0, vidas 3 y bola 300.
+- [X] En pausa se ven 5 botones de nivel y el actual está resaltado.
+- [X] En pausa, click en un botón o tecla `1`–`5` carga ese nivel en status `'start'` con puntaje y vidas conservados.
+- [X] Las teclas `1`–`5` no hacen nada fuera de `'paused'`.
+- [X] Rebote contra pared lateral, techo o paleta reproduce `bounce` y no `break`.
+- [X] Cualquier golpe a un bloque (dañino o destructivo) reproduce solo `break`, nunca `bounce`.
+- [X] No hay archivos de audio nuevos, control de volumen ni mute.
+- [X] Pausa con `P` o `Escape` sigue funcionando en los 5 niveles.
+- [X] Ningún archivo distinto de `game.js` cambia y `git diff` no modifica `sounds` ni `playSound`.
 
 ---
 
